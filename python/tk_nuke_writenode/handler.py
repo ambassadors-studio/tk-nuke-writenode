@@ -893,7 +893,8 @@ class TankWriteNodeHandler(object):
         # this will be displayed on the node in the graph
         # useful to tell what type of node it is
         pn = node.knob("profile_name").value()
-        label = "Shotgun Write %s" % pn
+        tank_channel = node.knob("tank_channel").value()
+        label = "\nShotgun {0}\n{1}".format(pn, tank_channel)
         self.__update_knob_value(node, "label", label)
 
         # get the render path:
