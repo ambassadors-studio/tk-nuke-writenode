@@ -762,6 +762,10 @@ class TankWriteNodeHandler(object):
                 self._app.log_error("The Write node's beforeRender setting failed "
                                     "to execute!")
                 raise
+
+        # Force a reset when rendering
+        self.reset_render_path(nuke.thisParent())
+
     def on_after_render_gizmo_callback(self):
         """
         Callback from nuke whenever a tank write node has finished being rendered
@@ -1328,7 +1332,7 @@ class TankWriteNodeHandler(object):
             lines.append(this_line)
         return lines
 
-    def __update_render_path(self, node, force_reset=False, is_proxy=False):
+    def __update_render_path(self, node, force_reset=True, is_proxy=False):
         """
         Update the render path and the various feedback knobs based on the current
         context and other node settings.
