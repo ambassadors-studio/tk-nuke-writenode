@@ -19,17 +19,17 @@ import re
 import nuke
 import nukescripts
 
-import tank
-from tank import TankError
-from tank.platform import constants
+from sgtk import TankError
+
 
 # Special exception raised when the work file cannot be resolved.
 class TkComputePathError(TankError):
     pass
 
+
 class TankWriteNodeHandler(object):
     """
-    Handles requests and processing from a tank write node.
+    Handles requests and processing from a sgtk write node.
     """
 
     SG_WRITE_NODE_CLASS = "WriteTank"
@@ -391,7 +391,7 @@ class TankWriteNodeHandler(object):
             node_pos = (sg_wn.xpos(), sg_wn.ypos())
 
             # create new regular Write node:
-            new_wn = nuke.createNode("Write")
+            new_wn = nuke.createNode("Write", inpanel=False)
             new_wn.setSelected(False)
 
             # copy across file & proxy knobs (if we've defined a proxy template):
@@ -409,7 +409,7 @@ class TankWriteNodeHandler(object):
             for knob_name, knob in int_wn.knobs().iteritems():
                 # skip knobs we don't want to copy:
                 if knob_name in ["file_type", "file", "proxy", "beforeRender", "afterRender",
-                              "name", "xpos", "ypos"]:
+                                 "name", "xpos", "ypos"]:
                     continue
 
                 if knob_name in new_wn.knobs():
@@ -497,12 +497,11 @@ class TankWriteNodeHandler(object):
             proxy_publish_template_knob = wn.knob("tk_proxy_publish_template")
 
             if (not profile_knob
-                or not output_knob
-                or not use_name_as_output_knob
-                or not render_template_knob
-                or not publish_template_knob
-                or not proxy_render_template_knob
-                or not proxy_publish_template_knob):
+                    or not output_knob or not use_name_as_output_knob
+                    or not render_template_knob
+                    or not publish_template_knob
+                    or not proxy_render_template_knob
+                    or not proxy_publish_template_knob):
                 # can't convert to a Shotgun Write Node as we have missing parameters!
                 continue
 
@@ -512,7 +511,7 @@ class TankWriteNodeHandler(object):
             node_pos = (wn.xpos(), wn.ypos())
 
             # create new Shotgun Write node:
-            new_sg_wn = nuke.createNode(TankWriteNodeHandler.SG_WRITE_NODE_CLASS)
+            new_sg_wn = nuke.createNode(TankWriteNodeHandler.SG_WRITE_NODE_CLASS, inpanel=False)
             new_sg_wn.setSelected(False)
 
             # copy across file & proxy knobs as well as all cached templates:
@@ -1547,7 +1546,7 @@ class TankWriteNodeHandler(object):
         fields = template.get_fields(file_name)
 
         # make sure we don't look for any eye - %V or SEQ - %04d stuff
-        frames = self._app.tank.paths_from_template(template, fields, ["SEQ", "eye"])
+        frames = self._app.sgtk.paths_from_template(template, fields, ["SEQ", "eye"])
 
         return frames
 
